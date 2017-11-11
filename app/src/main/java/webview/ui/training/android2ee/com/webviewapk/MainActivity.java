@@ -2,13 +2,14 @@ package webview.ui.training.android2ee.com.webviewapk;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String TAG = "MainActivity";
     WebView browser;
     CallBack webViewClient;
     Button btnPrevious,btnNext;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         //Javascript can open a new window
         browser.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         //load an URL
-        browser.loadUrl("https://www.com3elles.com/");
+        browser.loadUrl(getString(R.string.root_url));
     }
     /***********************************************************
      *  Define your navigation methods
@@ -73,8 +74,21 @@ public class MainActivity extends AppCompatActivity {
     private class CallBack extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.e(TAG,"The url that should be loaded "+url);
+            String urlToLoad=getString(R.string.root_url);
             //if it's fine
-            view.loadUrl(url);
+            if(url.contains(getString(R.string.core))){
+                Log.e(TAG,"The url contains "+getString(R.string.core));
+                Log.e(TAG,"The url is "+url+", the R.string.root_url "+getString(R.string.root_url)+" and are equals: "+(url.equalsIgnoreCase(getString(R.string.root_url))));
+
+                if(url.equalsIgnoreCase(getString(R.string.root_url))){
+                    urlToLoad=url+"/index.php?tmpl=component";
+                }else{
+                    urlToLoad=url+"?tmpl=component";
+                }
+            }
+            Log.e(TAG,"The url that is really loaded is "+urlToLoad);
+            view.loadUrl(urlToLoad);
             //else load something else
             return true;
         }
